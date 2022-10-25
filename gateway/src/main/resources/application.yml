@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true  #使用服务发现路由
+      routes:
+        - id: SERVICE-ACL
+          uri: lb://SERVICE-ACL
+          predicates:
+            - Path=/*/acl/** # 路径匹配 （断言）
+
+        - id: service-sys # 可随意
+          uri: lb://service-sys  # nacos注册名
+          predicates:
+            - Path=/sysService/** # 路径匹配（controller）
+
+
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848

@@ -1,0 +1,83 @@
+#### application.yml
+spring:
+  application:
+    name: service-sys
+    #spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #  url: jdbc:mysql://localhost:3306/guli_edu?serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://localhost:3306/guli_edu?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  #    时区设置（默认会显示时区，设置使其不显示）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+profiles:
+  active: dev
+####  application-dev.yml
+server:
+  port: 8081
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/zf/sysservice/mapper/xml/*.xml # xml
+
+
+global-config:
+  db-config:
+    logic-delete-value: 1
+logic-not-delete-value: 0
+
+hikari:
+  connection-test-query: SELECT 1
+connection-timeout: 60000
+idle-timeout: 500000
+max-lifetime: 540000
+maximum-pool-size: 12
+minimum-idle: 10
+pool-name: CRMHikariPool
+
+#======================================================
+## 日志配置
+#logging:
+#  level:
+#    # web日志
+#    org.springframework.web: info
+#    # security 日志
+#    org.springframework.security: error
+#    # mybatis日志
+#    org.mybatis: info
+#  #    org.mybatis-Plus: info  Plus需要单独配置
+#  charset:
+#    # 输出控制台编码
+#    console: UTF-8
+#    # 输出文件编码
+#    file: UTF-8
+#  # 输出文件名及路径，不配置则不输出文件
+#  file:
+#    # 切记，该文件表示正在产出日志的日志文件。并不会打包，当文件大于max-file-size,会根据file-name-pattern格式打包
+#    # 名称为log/ota.log文件夹会在--项目根目录---下，打包后会在启动包同目录下；名称为/log/ota.log的文件夹会在项目所在磁盘的根目录下
+#    name: log/ota.log
+#  logback:
+#    rollingpolicy:
+#      # 单文件的大小，默认10M, 超过之后打包成一个日志文件
+#      max-file-size: 10MB
+#      # 日志保存的天数
+#      max-history: 30
+#      # 打包文件格式,默认： ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz,书写格式为：文件路径/文件名.%i.文件后缀,其中%i不可省去，否则无日志显示
+#      # 例如： 日期为：2021/11/5 ,则打包文件之后为： log/ota.2021-11-05.0.gz,0表示日志的第一部分，后续就是，1,2,3...
+#      # 如果是压缩包，里面会多一个名log/ota.2021-11-05.0的日志文件
+#      # 如下面的例子，打包之后为: log/2021-11/ota.2020-11-5.0.log，这是一个日志文件
+#      file-name-pattern: log/%d{yyyy-MM}/ota.%d{yyyy-MM-dd}.%i.log
+#======================================================
+# 开启熔断机制
+feign:
+  hystrix:
+    enabled: true

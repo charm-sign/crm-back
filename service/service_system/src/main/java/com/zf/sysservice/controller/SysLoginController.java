@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Author: ZF
  * @date: 2022/10/25 14:09
  */
-@Api("登录管理")
+@Api(description = "登录管理")
 @RestController
 @RequestMapping("/sysService/user")
 public class SysLoginController {

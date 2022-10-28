@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @ClassName: SysApplication
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 @MapperScan("com.zf.sysservice.mapper")
 @ComponentScan(basePackages = {"com.zf"})
+
 public class SysApplication {
     public static void main(String[] args) {
         SpringApplication.run(SysApplication.class,args);

@@ -14,7 +14,7 @@
         <result column="email" property="email"/>
         <result column="age" property="age"/>
         <result column="dept" property="dept"/>
-        <result column="hiredate" property="hiredate"/>
+        <result column="hire_date" property="hireDate"/>
         <result column="state" property="state"/>
         <result column="admin" property="admin"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -26,21 +26,120 @@
         <result column="departmentName" jdbcType="VARCHAR" property="departmentName"/>
         <result column="roleNames" jdbcType="VARCHAR" property="roleNames"/>
     </resultMap>
+    <resultMap id="Statistical" type="com.zf.sysservice.entity.vo.Statistical" extends="baseResultMap">
+        <result column="name" property="name"/>
+        <result column="count" property="count"/>
+        <result column="value" property="value"/>
+    </resultMap>
     <!--    查询员工明细列表  多对多-->
     <select id="selectEmployeeDetailList" resultMap="EmployeeDetail">
-        select e.id,e.name,e.email,e.age,d.name departmentName,
+        select e.id,e.name,e.email,e.age,d.name departmentName,e.state,
         group_concat(r.name) roleNames
         from employee e
-        join department d on d.id=e.dept
+        left join department d on d.id=e.dept
         left join employee_role er on er.employeeId=e.id
         left join role as r on er.roleId = r.id
+        <where>
+            <if test="name != null">
+                e.name like concat('%',#{name},'%')
+            </if>
+            <if test="dept != null and dept >0">
+                and e.dept = #{dept}
+            </if>
+        </where>
+        group by e.id order by e.create_time desc
+    </select>
+    <!--    根据id查询信息-->
+    <select id="getDetailById" parameterType="String" resultMap="baseResultMap">
+        select e.id,
+               e.name,
+               e.password,
+               e.email,
+               e.age,
+               e.dept,
+               e.state,
+               e.admin,
+               e.hire_date,
+               e.login_time,
+               e.create_time,
+               e.modified_time
+        from employee e
+                 join department d on d.id = e.dept
+        where e.id = #{employeeId}
+    </select>
+    <!--    根据id查询明细-->
+    <select id="getEmployeeDetailById" parameterType="String" resultMap="EmployeeDetail">
+        select e.id,
+               e.name,
+               e.password,
+               e.email,
+               e.age,
+               d.name               departmentName,
+               e.state,
+               e.admin,
+               e.hire_date,
+               e.login_time,
+               e.create_time,
+               e.modified_time,
+               group_concat(r.name) roleNames
+        from employee e
+                 left join department d on d.id = e.dept
+                 left join employee_role er on er.employeeId = e.id
+                 left join role as r on er.roleId = r.id
+        where e.id = #{employeeId}
+        group by e.id
 
-              <if test="name != null">
-                  where e.name like concat('%',#{name},'%')
-              </if>
-        <if test="dept != null and dept >0">
-            and e.dept = #{dept}
+    </select>
+    <insert id="saveBatchExcel" parameterType="com.zf.sysservice.entity.DemoData">
+        insert into employee(name,password,age,email)
+        values
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.name},#{obj.password},#{obj.age},#{obj.email})
+        </foreach>
+    </insert>
+
+    <select id="selectStatistical" resultMap="Statistical">
+        SELECT
+        <if test="employeeQuery.type==null  or employeeQuery.type==1 or employeeQuery.type==0">
+            count(c.create_time) as count,
+            e.name as name
         </if>
-group by e.id order by e.create_time desc
+        <if test="employeeQuery.type!=null  and employeeQuery.type>1">
+            count(c.create_time) as count,
+        </if>
+        <if test="employeeQuery.type!=null  and employeeQuery.type==2">
+            date_format(c.create_time,'%Y') as name
+        </if>
+        <if test="employeeQuery.type!=null  and employeeQuery.type==3">
+            date_format(c.create_time,'%Y-%m') as name
+        </if>
+        <if test="employeeQuery.type!=null and employeeQuery.type==4">
+            date_format(c.create_time,'%Y-%m-%d') as name
+        </if>
+        from customer c
+        left join employee e on c.input_user=e.id
+        <where>
+            <if test="employeeQuery.name!=null">
+                e.name like concat('%',#{employeeQuery.name},'%')
+            </if>
+            <if test="employeeQuery.startTime!=null and employeeQuery.endTime!=null">
+                and c.create_time between #{employeeQuery.startTime} and #{employeeQuery.endTime}
+            </if>
+<if test="id!=null and id!=''">
+    and e.id=#{id}
+</if>
+        </where>
+        <if test="employeeQuery.type==null or employeeQuery.type==1 or employeeQuery.type==0">
+            group by e.name
+        </if>
+        <if test="employeeQuery.type!=null and employeeQuery.type>1">
+            group by date_format(c.create_time,'%Y-%m')
+        </if>
+order by c.create_time
+    </select>
+
+    <select id="selectAllCustomerStatus" resultMap="Statistical">
+        SELECT count(*) value,c.status name FROM customer c
+        GROUP BY c.status
     </select>
 </mapper>

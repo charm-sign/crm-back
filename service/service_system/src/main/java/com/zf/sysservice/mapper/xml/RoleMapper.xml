@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zf.sysservice.mapper.RoleMapper">
 
+    <resultMap id="baseResultMap" type="com.zf.sysservice.entity.Role">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+    
+    <select id="selectEmployeeWithRoleById" resultMap="baseResultMap">
+        select r.id,r.name,r.sn,r.is_deleted,r.create_time,r.modified_time
+from employee_role er
+left join role r on er.roleId=r.id
+where employeeId=#{employeeId}
+    </select>
 </mapper>

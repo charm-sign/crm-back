@@ -18,7 +18,10 @@ spring:
           uri: lb://service-sys  # nacos注册名
           predicates:
             - Path=/sysService/** # 路径匹配（controller）
-
+        - id: service-cust # 可随意
+          uri: lb://service-cust  # nacos注册名
+          predicates:
+            - Path=/custService/** # 路径匹配（controller）
 
     nacos:
       discovery:

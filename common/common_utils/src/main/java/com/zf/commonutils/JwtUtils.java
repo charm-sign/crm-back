@@ -28,7 +28,7 @@ public class JwtUtils {
                     .setSubject("charm_sign") //自定义
                     .setIssuedAt(new Date()) //设置过期时间
                     .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
-                    //设置token主题部分 存储用户信息
+                    //设置token主体部分 存储用户信息
                     .claim("id", id)  //自定义
                     .claim("nickname", nickname)//自定义
                     //生成
@@ -73,7 +73,7 @@ public class JwtUtils {
          * @return
          */
         public static String getMemberIdByJwtToken(HttpServletRequest request) {
-            String jwtToken = request.getHeader("token");
+            String jwtToken = request.getHeader("X-Token");//此处注意要与请求头一致
             if(StringUtils.isEmpty(jwtToken)) return "";
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
             Claims claims = claimsJws.getBody();

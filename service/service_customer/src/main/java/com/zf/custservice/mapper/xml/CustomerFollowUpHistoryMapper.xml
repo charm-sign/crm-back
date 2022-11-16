@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.custservice.mapper.CustomerFollowUpHistoryMapper">
+
+    <resultMap id="baseResultMap" type="com.zf.custservice.entity.CustomerFollowUpHistory">
+        <result column="id" property="id"/>
+        <result column="trace_time" property="traceTime"/>
+        <result column="trace_details" property="traceDetails"/>
+        <result column="trace_type" property="traceType"/>
+        <result column="trace_result" property="traceResult"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="input_user" property="inputUser"/>
+        <result column="type" property="type"/>
+        <result column="comment" property="comment"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+    <resultMap id="detailResultMap" type="com.zf.custservice.entity.vo.CustomerFollowUpHistoryDetail"
+               extends="baseResultMap">
+        <result column="traceTypes" property="traceTypes"/>
+        <result column="customerNames" property="customerNames"/>
+        <result column="inputUsers" property="inputUsers"/>
+    </resultMap>
+    <select id="selectCustomerFollowUpHistoryDetailList" resultMap="detailResultMap">
+        select cfuh.id,cfuh.trace_time,cfuh.trace_details,dd.title traceTypes,cfuh.trace_result,c.name
+        customerNames,e.name inputUsers,cfuh.type,cfuh.comment
+        from customer_follow_up_history cfuh
+        left join dictionary_details dd on cfuh.trace_type=dd.id
+        left join customer c on cfuh.customer_id=c.id
+        left join employee e on cfuh.input_user=e.id
+        <where>
+            <if test="name!=null and name!=''">
+                c.name like concat('%',#{name},'%')
+            </if>
+            <if test="startTime!=null">
+                and cfuh.trace_time between #{startTime} and #{endTime}
+            </if>
+            <if test="type!=null and type!=''">
+                and cfuh.type=#{type}
+            </if>
+        </where>
+        order by cfuh.trace_time desc
+    </select>
+
+    <select id="selectCustomerFollowUpHistory" parameterType="String" resultMap="baseResultMap">
+        select  cfuh.id,cfuh.trace_time,cfuh.trace_details,cfuh.trace_type,cfuh.trace_result,c.name customer_id,cfuh.input_user,
+               cfuh.type,cfuh.comment,cfuh.is_deleted,cfuh.create_time,cfuh.modified_time
+        from customer_follow_up_history cfuh
+                 left join customer c on cfuh.customer_id = c.id
+where cfuh.id=#{id};
+
+    </select>
+</mapper>

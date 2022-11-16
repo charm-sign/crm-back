@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @ClassName: EmployeeQuery
@@ -19,5 +20,9 @@ public class EmployeeQuery implements Serializable {
     private String name;
     @ApiModelProperty(value = "员工部门,模糊查询")
     private Integer dept;
+    private Date startTime;
+    private Date endTime;
+    private Integer type;
 
+    private String employeeId;
 }

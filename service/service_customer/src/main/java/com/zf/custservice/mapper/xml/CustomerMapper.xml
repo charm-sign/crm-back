@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.custservice.mapper.CustomerMapper">
+    <resultMap id="baseResultMap" type="com.zf.custservice.entity.Customer">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="gender" property="gender"/>
+        <result column="tel" property="tel"/>
+        <result column="qq" property="qq"/>
+        <result column="job" property="job"/>
+        <result column="source" property="source"/>
+        <result column="seller" property="seller"/>
+        <result column="input_user" property="inputUser"/>
+        <result column="status" property="status"/>
+        <result column="positive_time" property="positiveTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+    <resultMap id="CustomerDetail" type="com.zf.custservice.entity.vo.CustomerDetail" extends="baseResultMap">
+        <result column="jobs" jdbcType="VARCHAR" property="jobs"/>
+        <result column="sources" jdbcType="VARCHAR" property="sources"/>
+        <result column="sellers" jdbcType="VARCHAR" property="sellers"/>
+    </resultMap>
+<select id="selectCustomerDetailList"  resultMap="CustomerDetail">
+    select c.id,c.name,c.age,c.gender,c.tel,c.qq,d.title jobs,d2.title sources,e.name sellers,c.status
+    from customer c
+             join dictionary_details d on c.job=d.id
+             join dictionary_details d2 on c.source=d2.id
+             left join employee e on c.seller=e.id
+    <where>
+        <if test="name!=null and name!=''">
+            c.name like concat('%',#{name},'%')
+        </if>
+        <if test="status != null ">
+            and c.status = #{status}
+        </if>
+    </where>
+order by c.create_time desc
+</select>
+    <select id="selectCustById" resultMap="CustomerDetail">
+        select c.name,c.tel,d.title jobs
+from customer c
+         left join employee e on c.seller=e.id
+         left join dictionary_details d on c.job=d.id
+where e.id=#{id}
+order by c.create_time desc
+    </select>
+</mapper>

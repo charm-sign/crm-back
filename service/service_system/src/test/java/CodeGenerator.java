@@ -10,8 +10,8 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import org.junit.Test;
 
 /**
- * @author
- * @since 2018/12/13
+ * @ZF
+ * @since 2022/10/13
  * 需要引入代码生成器依赖
  */
 /*<!-- velocity 模板引擎, Mybatis Plus 代码生成器需要 -->
@@ -71,7 +71,7 @@ public class CodeGenerator {
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
 //   --------------------------需要改--------------------------------
-        strategy.setInclude("role");//要生成的表名，可加，配置多张表
+        strategy.setInclude("employee_role");//要生成的表名，可加，配置多张表
 //   -----------------------------------------------------------------
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀

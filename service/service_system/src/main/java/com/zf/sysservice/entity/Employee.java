@@ -46,10 +46,9 @@ public class Employee implements Serializable {
     private Integer age;
 
     @ApiModelProperty(value = "部门")
-    private Integer dept;
+    private String dept;
 
     @ApiModelProperty(value = "入职时间")
-    @TableField("hireDate")
     private Date hireDate;
 
     @ApiModelProperty(value = "状态 1正常 0离职")

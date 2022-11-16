@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.custservice.mapper.CustomerHandoverMapper">
+    <resultMap id="baseResultMap" type="com.zf.custservice.entity.CustomerHandover">
+        <result column="id" property="id"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="trans_user" property="transUser"/>
+        <result column="trans_time" property="transTime"/>
+        <result column="old_seller" property="oldSeller"/>
+        <result column="new_seller" property="newSeller"/>
+        <result column="trans_reason" property="transReason"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+    <resultMap id="detailResultMap" type="com.zf.custservice.entity.vo.CustomerHandoverDetail"
+               extends="baseResultMap">
+        <result column="customerName" property="customerName"/>
+        <result column="operator" property="operator"/>
+        <result column="oldMarket" property="oldMarket"/>
+        <result column="newMarket" property="newMarket"/>
+    </resultMap>
+    <!--    分页条件查询移交历史-->
+    <select id="selectDetailCustomerHandoverHistory" resultMap="detailResultMap">
+        select ch.id,c.name customerName,e.name Operator,ch.trans_time,e2.name oldMarket,e3.name newMarket,ch.trans_reason
+        from customer_handover ch
+        left join customer c on ch.customer_id=c.id
+        left join employee e on ch.trans_user=e.id
+        left join employee e2 on ch.old_seller=e2.id
+        left join employee e3 on ch.new_seller=e3.id
+        <where>
+            <if test="name !=null and name!=''">
+                c.name like concat('%',#{name},'%')
+            </if>
+            <if test="startTime!=null">
+                and ch.trans_time between #{startTime} and #{endTime}
+            </if>
+        </where>
+        order by ch.trans_time desc
+    </select>
+</mapper>

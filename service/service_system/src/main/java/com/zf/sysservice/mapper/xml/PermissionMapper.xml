@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.sysservice.mapper.PermissionMapper">
+    <resultMap id="baseResultMap" type="com.zf.sysservice.entity.Permission">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="expression" property="expression"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+<!--    根据角色id查询对应的权限信息-->
+    <select id="selectRoleWithPermissionById" parameterType="String" resultMap="baseResultMap">
+        select p.id,p.name,p.expression,p.is_deleted,p.create_time,p.modified_time
+        from role_permission rp
+                 join  permission p
+                       on rp.permission_id=p.id
+        where rp.role_id=#{roleId}
+    </select>
+</mapper>

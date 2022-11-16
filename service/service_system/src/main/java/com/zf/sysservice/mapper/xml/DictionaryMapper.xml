@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.sysservice.mapper.DictionaryMapper">
+    <resultMap id="baseResultMap" type="com.zf.sysservice.entity.Dictionary">
+        <result column="id" property="id"/>
+        <result column="sn" property="sn"/>
+        <result column="name" property="name"/>
+        <result column="intro" property="intro"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+        <collection property="DetailList" ofType="com.zf.sysservice.entity.DictionaryDetails">
+            <result column="did" property="id"></result>
+            <result column="title" property="title"></result>
+            <result column="sequence" property="sequence"></result>
+            <result column="parentId" property="parentId"></result>
+        </collection>
+    </resultMap>
+    <select id="selectDictionaryDetailList" resultMap="baseResultMap">
+        select d.id,
+               d.sn,
+               d.name,
+               d.intro,
+               d.is_deleted,
+               d.create_time,
+               d.modified_time,
+               dd.id    did,
+               dd.title title,
+               dd.sequence,
+               dd.parentId
+        from dictionary d
+                 left join dictionary_details dd on d.id = dd.parentId
+order by d.create_time desc
+    </select>
+</mapper>

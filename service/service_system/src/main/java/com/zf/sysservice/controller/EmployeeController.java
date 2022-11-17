@@ -76,6 +76,8 @@ public class EmployeeController {
     @GetMapping("getInfoById/{employeeId}")
     public R getInfoById(@PathVariable String employeeId) {
         Employee employee = employeeService.getDetailById(employeeId);
+
+        employee.setCheckPassword(employee.getPassword());
         List<Role> roleList = roleService.selectEmployeeWithRoleById(employeeId);
         return R.success().data("employee", employee).data("roleList", roleList);
     }

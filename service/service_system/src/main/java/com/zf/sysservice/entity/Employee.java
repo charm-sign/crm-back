@@ -39,6 +39,10 @@ public class Employee implements Serializable {
     @ApiModelProperty(value = "密码")
     private String password;
 
+    @TableField(exist = false)
+    @ApiModelProperty(value = "确认密码")
+    private String checkPassword;
+
     @ApiModelProperty(value = "邮箱")
     private String email;
 

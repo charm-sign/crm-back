@@ -3,6 +3,7 @@ package com.zf.sysservice.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zf.commonutils.JwtUtils;
+import com.zf.commonutils.MD5;
 import com.zf.commonutils.R;
 import com.zf.sysservice.entity.Employee;
 import com.zf.sysservice.entity.dto.Login;
@@ -37,7 +38,8 @@ public class SysLoginController {
     @PostMapping("login")
     public R login(@RequestBody Login login) {
         String name = login.getUsername();
-        String password = login.getPassword();
+        //MD5加密对比
+        String password = MD5.encrypt(login.getPassword());
         LambdaQueryWrapper<Employee> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Employee::getName, name)
                 .eq(Employee::getPassword, password);

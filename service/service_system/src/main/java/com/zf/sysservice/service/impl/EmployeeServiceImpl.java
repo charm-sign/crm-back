@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zf.commonutils.MD5;
 import com.zf.commonutils.R;
 import com.zf.servicebase.exceptionhandler.CrmException;
 import com.zf.sysservice.entity.*;
@@ -62,17 +63,20 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
      */
     @Override
     public void saveEmployeeWithRole(Employee employee, String[] roleIds) {
+        String password = employee.getPassword();
+        employee.setPassword(MD5.encrypt(password));
         baseMapper.insert(employee);
         String employeeId = employee.getId();
         EmployeeRole employeeRole = null;
         // RolePermission rolePermission= null;
+        if (roleIds!=null){
         for (String roleId : roleIds) {
             employeeRole = new EmployeeRole();
             employeeRole.setEmployeeId(employeeId);
             employeeRole.setRoleId(roleId);
             employeeRoleService.save(employeeRole);
         }
-    }
+    }}
 
     /**
      * 修改员工（员工表+员工角色表）
@@ -84,6 +88,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     public void updateEmployeeById(Employee employee, String[] roleIds) {
         //修改员工表数据
         String employeeId = employee.getId();
+        employee.setPassword(MD5.encrypt(employee.getPassword()));
         baseMapper.updateById(employee);
         //删除数据 员工 - 角色表
         LambdaQueryWrapper<EmployeeRole> lqw = new LambdaQueryWrapper<>();
@@ -91,12 +96,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         employeeRoleService.remove(lqw);
         //添加数据 员工 - 角色表
         EmployeeRole employeeRole = null;
+        if(roleIds!=null){
         for (String roleId : roleIds) {
             employeeRole = new EmployeeRole();
             employeeRole.setEmployeeId(employeeId);
             employeeRole.setRoleId(roleId);
             employeeRoleService.save(employeeRole);
-        }
+        }}
     }
 
     @Override

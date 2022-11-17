@@ -38,11 +38,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         baseMapper.insert(role);
         String roleId = role.getId();
         RolePermission rolePermission= null;
+        if(permissionIds!=null){
         for (String permissionId : permissionIds) {
             rolePermission = new RolePermission();
             rolePermission.setRoleId(roleId);
             rolePermission.setPermissionId(permissionId);
             rolePermissionService.save(rolePermission);
+        }
         }
     }
 
@@ -76,11 +78,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         rolePermissionService.remove(lqw);
         //添加数据 角色 - 权限表
         RolePermission rolePermission= null;
+        if (permissionIds!=null){
         for (String permissionId : permissionIds) {
             rolePermission = new RolePermission();
             rolePermission.setRoleId(roleId);
             rolePermission.setPermissionId(permissionId);
             rolePermissionService.save(rolePermission);
+        }
         }
     }
 

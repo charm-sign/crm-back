@@ -21,7 +21,7 @@ public class CrmException extends RuntimeException {
 
     @Override
     public String toString() {
-        return "GuliException{" +
+        return "CrmException{" +
                 "code=" + code +
                 ", msg='" + msg + '\'' +
                 '}';

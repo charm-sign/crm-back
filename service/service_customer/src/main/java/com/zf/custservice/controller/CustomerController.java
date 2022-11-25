@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class CustomerController {
 
     @ApiOperation("分页条件查询客户列表")
     @PostMapping("list/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAnyAuthority('CM:list','customerPool:list')")
     public R list(@PathVariable int pageNo, @PathVariable int pageSize, @RequestBody(required = false) Customer customer, HttpServletRequest request) {
         String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
         log.info("当前用户" + memberIdByJwtToken);
@@ -44,8 +46,10 @@ public class CustomerController {
 
     }
 
+//    @PreAuthorize()
     @ApiOperation("添加客户")
     @PostMapping("add")
+    @PreAuthorize("hasAuthority('customer:saveOrUpdate')")
     public R add(@RequestBody Customer customer, HttpServletRequest request) {
         //获取当前登陆的账户id
         String employeeId = JwtUtils.getMemberIdByJwtToken(request);
@@ -66,6 +70,7 @@ public class CustomerController {
 
     @ApiOperation("修改客户")
     @PostMapping("update")
+    @PreAuthorize("hasAnyAuthority('customer:saveOrUpdate','customer:changeStatus')")
     public R update(@RequestBody Customer customer, HttpServletRequest request) {
 //        //获取当前登陆的账户id
 //        String employeeId = JwtUtils.getMemberIdByJwtToken(request);

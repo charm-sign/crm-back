@@ -9,6 +9,7 @@ import com.zf.custservice.service.CustomerFollowUpHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ public class CustomerFollowUpHistoryController {
 
     @ApiOperation("分页条件查询跟进历史")
     @PostMapping("list/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('followHistory:list')")
     public R list(@PathVariable int pageNo, @PathVariable int pageSize, @RequestBody(required = false) CustomerQuery customerQuery) {
         Map<String, Object> map = customerFollowUpHistoryService.selectDetailCustomerFollowUpHistory(pageNo, pageSize, customerQuery);
         return R.success().data(map);
@@ -38,6 +40,7 @@ public class CustomerFollowUpHistoryController {
 
     @ApiOperation("添加跟进历史")
     @PostMapping("add")
+    @PreAuthorize("hasAuthority('followHistory:saveOrUpdate')")
     public R add(@RequestBody CustomerFollowUpHistory customerFollowUpHistory, HttpServletRequest request) {
         //添加创建人，为当前登录用户
         String employeeId = JwtUtils.getMemberIdByJwtToken(request);
@@ -55,6 +58,7 @@ public class CustomerFollowUpHistoryController {
 
     @ApiOperation("修改跟进历史")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('CF:addOrUpdate')")
     public R update(@RequestBody CustomerFollowUpHistory customerFollowUpHistory) {
         //不用修改客户名称及创建人
         CustomerFollowUpHistory followUpHistory = new CustomerFollowUpHistory();

@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ public class PermissionController {
     private PermissionService permissionService;
     @ApiOperation("分页查询权限列表数据")
     @GetMapping("list/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('permission:list')")
     public R list(@PathVariable int pageNo, @PathVariable int pageSize, HttpServletRequest request){
         String token2 = request.getHeader("X-Token");
         log.info("token2="+token2);
@@ -47,6 +49,7 @@ public class PermissionController {
 
     @ApiOperation("删除权限")
     @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('permission:delete')")
     public R delete(@PathVariable String id){
         permissionService.removeById(id);
         return R.success();
@@ -58,5 +61,12 @@ public class PermissionController {
         List<Permission> list = permissionService.list(null);
         return R.success().data("list",list);
     }
+    @ApiOperation("根据id获取当前用户权限")
+    @GetMapping("getPermsByEmployeeId/{id}")
+    public List<String> getPermsByEmployeeId(@PathVariable String id){
+        List<String> perms = permissionService.selectPermsByEmployeeId(id);
+        return perms;
+    }
+
 }
 

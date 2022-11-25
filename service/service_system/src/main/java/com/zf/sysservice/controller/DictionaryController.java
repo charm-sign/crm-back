@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class DictionaryController {
     private DictionaryDetailsService detailsService;
     @ApiOperation("添加字典")
     @PostMapping("add")
+    @PreAuthorize("hasAuthority('dictionaryContents:addOrUpdate')")
     public R add(@RequestBody Dictionary dictionary){
         boolean save = dictionaryService.save(dictionary);
         if (save){
@@ -46,6 +48,7 @@ public class DictionaryController {
     }
     @ApiOperation("分页条件查询字典列表")
     @PostMapping("conditionList/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('dictionaryContents:list')")
     public R conditionList(@PathVariable int pageNo, @PathVariable int pageSize, @RequestBody(required = false) Dictionary dictionary) {
         Page<Dictionary> page = new Page<>(pageNo, pageSize);
         LambdaQueryWrapper<Dictionary> lqw = new LambdaQueryWrapper<>();
@@ -66,6 +69,7 @@ public class DictionaryController {
 
     @ApiOperation("修改字典信息")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('dictionaryContents:addOrUpdate')")
     public R update(@RequestBody Dictionary dictionary){
         dictionaryService.updateById(dictionary);
         return R.success();
@@ -83,6 +87,13 @@ public class DictionaryController {
     @ApiOperation("查询字典明细列表")
     @GetMapping("detailList")
     public R detailList(){
+        List<Dictionary> dictionaryDetailList=dictionaryService.selectDictionaryDetailList();
+        return R.success().data("dictionaryDetailList",dictionaryDetailList);
+    }
+
+    @GetMapping("detailList2")
+    @PreAuthorize("hasAnyAuthority('dictionaryDetails:list')")
+    public R detailList2(){
         List<Dictionary> dictionaryDetailList=dictionaryService.selectDictionaryDetailList();
         return R.success().data("dictionaryDetailList",dictionaryDetailList);
     }

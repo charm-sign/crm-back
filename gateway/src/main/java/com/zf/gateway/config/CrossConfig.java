@@ -12,7 +12,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @Description: TODO
  * @Author: ZF
  * @date: 2022/10/25 13:23
- * 跨域配置（不用再加注解）
+ * 网关跨域配置（不用再加注解）
  * 用了注解不能再使用此配置类
  */
 @Configuration

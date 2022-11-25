@@ -17,6 +17,7 @@ import com.zf.sysservice.service.EmployeeRoleService;
 import com.zf.sysservice.service.EmployeeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,8 +64,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
      */
     @Override
     public void saveEmployeeWithRole(Employee employee, String[] roleIds) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        //TODO 用security加密
         String password = employee.getPassword();
-        employee.setPassword(MD5.encrypt(password));
+        employee.setPassword(passwordEncoder.encode(password));
         baseMapper.insert(employee);
         String employeeId = employee.getId();
         EmployeeRole employeeRole = null;

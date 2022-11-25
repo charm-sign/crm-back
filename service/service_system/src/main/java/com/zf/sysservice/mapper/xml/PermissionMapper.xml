@@ -17,4 +17,17 @@
                        on rp.permission_id=p.id
         where rp.role_id=#{roleId}
     </select>
+
+<!--    查询当前用户所具有的权限信息-->
+    <select id="selectPermsByEmployeeId" resultType="String">
+        SELECT
+            DISTINCT p.expression
+        from
+            employee e
+                 JOIN employee_role er on e.id=er.employeeId
+                 JOIN role r on er.roleId=r.id
+                 JOIN role_permission rp on r.id=rp.role_id
+                 JOIN permission p on rp.permission_id=p.id
+        WHERE e.id=#{id}
+    </select>
 </mapper>

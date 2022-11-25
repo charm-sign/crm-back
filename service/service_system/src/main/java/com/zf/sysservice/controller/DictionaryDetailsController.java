@@ -8,6 +8,7 @@ import com.zf.sysservice.service.DictionaryDetailsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.PublicKey;
@@ -29,6 +30,7 @@ public class DictionaryDetailsController {
 
     @ApiOperation("添加字典明细（根据父ID）")
     @PostMapping("add/{parentId}")
+    @PreAuthorize("hasAuthority('dictionaryDetails:addOrUpdate')")
     public R add(@PathVariable String parentId, @RequestBody DictionaryDetails dictionaryDetails) {
         dictionaryDetails.setParentId(parentId);
         detailsService.save(dictionaryDetails);
@@ -44,6 +46,7 @@ public class DictionaryDetailsController {
 
     @ApiOperation("修改明细信息")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('dictionaryDetails:addOrUpdate')")
     public R update(@RequestBody DictionaryDetails dictionaryDetails){
         detailsService.updateById(dictionaryDetails);
         return R.success();

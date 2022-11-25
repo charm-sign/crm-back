@@ -11,6 +11,7 @@ import com.zf.sysservice.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class DepartmentController {
 
     @ApiOperation("添加部门")
     @PostMapping("add")
+    @PreAuthorize("hasAuthority('department:addOrUpdate')")
     public R add(@RequestBody Department department) {
         departmentService.save(department);
         return R.success();
@@ -39,6 +41,7 @@ public class DepartmentController {
 
     @ApiOperation("删除部门")
     @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('department:delete')")
     public R delete(@PathVariable String id) {
         boolean b = departmentService.removeById(id);
         if (b) {
@@ -50,6 +53,7 @@ public class DepartmentController {
 
     @ApiOperation("修改部门")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('department:addOrUpdate')")
     public R update(@RequestBody Department department) {
         departmentService.updateById(department);
         return R.success();
@@ -57,6 +61,7 @@ public class DepartmentController {
 
     @ApiOperation("分页查询部门列表")
     @GetMapping("list/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('department:list')")
     public R list(@PathVariable int pageNo, @PathVariable int pageSize) {
         Page<Department> page = new Page<>(pageNo, pageSize);
         LambdaQueryWrapper<Department> lqw = new LambdaQueryWrapper<>();

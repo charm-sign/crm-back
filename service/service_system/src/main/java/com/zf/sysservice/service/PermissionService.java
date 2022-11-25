@@ -20,4 +20,6 @@ public interface PermissionService extends IService<Permission> {
      * @return
      */
     List<Permission> selectRoleWithPermissionById(String roleId);
+    //查询当前用户所具有的所有权限
+    List<String> selectPermsByEmployeeId(String id);
 }

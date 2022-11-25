@@ -39,7 +39,7 @@ public class EmployeeExcelListener extends AnalysisEventListener<DemoData> {
     @Override
     public void invoke(DemoData data, AnalysisContext analysisContext) {
         if (data == null) {
-            throw new CrmException(20002, "请导入有数据的文件！");
+            throw new CrmException(20001, "请导入有数据的文件！");
         }
        log.info ("解析到一条数据:{}", JSON.toJSONString(data));
         Employee employee = new Employee();

@@ -12,6 +12,7 @@ import com.zf.sysservice.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,26 +39,25 @@ public class RoleController {
 
     @ApiOperation("添加角色(权限)")
     @PostMapping("add")
+    @PreAuthorize("hasAuthority('role:addOrUpdate')")
     public R add(@RequestBody Role role, @RequestParam(value = "ids", required = false) String[] permissionIds) {
 //        System.out.println(permissionIds);
-
-        roleService.saveRoleWithPermission(role, permissionIds);//TODO
-
+        roleService.saveRoleWithPermission(role, permissionIds);
         return R.success();
     }
 
     @ApiOperation("删除角色")
     @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('role:delete')")
     public R delete(@PathVariable String id) {
         roleService.removeRoleWithPermissionById(id);
         return R.success();
-
-
     }
 
 
     @ApiOperation("修改角色")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('role:addOrUpdate')")
     public R update(@RequestBody Role role, @RequestParam(value = "ids", required = false) String[] permissionIds) {
         roleService.updateRoleById(role, permissionIds);
         return R.success();
@@ -65,6 +65,7 @@ public class RoleController {
 
     @ApiOperation("分页查询角色列表")
     @GetMapping("list/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('role:list')")
     public R list(@PathVariable int pageNo, @PathVariable int pageSize) {
         Page<Role> page = new Page<>(pageNo, pageSize);
         LambdaQueryWrapper<Role> lqw = new LambdaQueryWrapper<>();

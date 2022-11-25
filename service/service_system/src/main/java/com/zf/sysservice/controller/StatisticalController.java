@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ public class StatisticalController {
     private EmployeeService employeeService;
     @ApiOperation("统计分析")
     @PostMapping("statistical/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('statisticalAnalysis:list')")
     public R statistical(@RequestBody(required = false) EmployeeQuery employeeQuery,@PathVariable int pageNo,@PathVariable int pageSize, HttpServletRequest request) {
 
         String id = JwtUtils.getMemberIdByJwtToken(request);
@@ -65,6 +67,7 @@ public class StatisticalController {
         PageInfo<Statistical> pageInfo = new PageInfo<>(statisticalList);
         total = pageInfo.getTotal();
         return R.success().data("statisticalList", statisticalList).data("total", total);
+
     }
 
     @ApiOperation("查询所有的客户，按状态分组,且返回当前账号信息")
@@ -75,9 +78,6 @@ public class StatisticalController {
         EmployeeDetail employeeDetail = employeeService.getEmployeeDetailById(id);
         //获取客户统计
         List<Statistical>  allCustomerStatus =employeeService.selectAllCustomerStatus();
-
-
-
         return R.success().data("allCustomerStatus",allCustomerStatus).data("employeeDetail",employeeDetail);
     }
 }

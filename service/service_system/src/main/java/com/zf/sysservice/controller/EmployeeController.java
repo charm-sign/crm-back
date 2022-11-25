@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +53,7 @@ public class EmployeeController {
 
     @ApiOperation("删除员工")
     @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('employee:delete')")
     public R delete(@PathVariable String id) {
         employeeService.removeEmployeeWithRoleById(id);
         return R.success();
@@ -59,6 +61,7 @@ public class EmployeeController {
 
     @ApiOperation("修改员工")
     @PostMapping("update")
+    @PreAuthorize("hasAuthority('employee:edit')")
     public R update(@RequestBody Employee employee, @RequestParam(value = "ids", required = false) String[] roleIds) {
         employeeService.updateEmployeeById(employee, roleIds);
         return R.success();
@@ -67,6 +70,7 @@ public class EmployeeController {
     @ApiOperation("分页条件查询员工")
     //有表单提交，用post
     @PostMapping("conditionList/{pageNo}/{pageSize}")
+    @PreAuthorize("hasAuthority('employee:list')")
     public R conditionList(@PathVariable(required = false) int pageNo, @PathVariable(required = false) int pageSize, @RequestBody(required = false) EmployeeQuery employeeQuery) {
         Map<String, Object> map = employeeService.selectEmployeeDetailList(pageNo, pageSize, employeeQuery);
         return R.success().data(map);
@@ -84,6 +88,7 @@ public class EmployeeController {
 
     @ApiOperation("批量删除员工(角色)")
     @PostMapping("deletedBatch")
+    @PreAuthorize("hasAuthority('employee:deleteMultiple')")
     public R deletedBatch(@RequestParam(value = "employeeIds") List<String> employeeIds) {
         employeeService.removeEmployeeWithRoleByIds(employeeIds);
         return R.success();
@@ -117,6 +122,12 @@ public class EmployeeController {
         List<Employee> employeeList = employeeService.list(null);
         return R.success().data("employeeList",employeeList);
     }
+@ApiOperation("根据id获取用户明细信息")
+    @GetMapping("getEmployeeDetailById/{id}")
+    public EmployeeDetail getEmployeeDetailById(@PathVariable String id){
+   return employeeService.getEmployeeDetailById(id);
+
+}
 
 
 }

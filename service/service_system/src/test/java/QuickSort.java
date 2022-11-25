@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /**
  * @ClassName: QuickSort
- * @Description: TODO
+ * @Description: 快速排序
  * @Author: ZF
  * @date: 2022/11/16 15:18
  */

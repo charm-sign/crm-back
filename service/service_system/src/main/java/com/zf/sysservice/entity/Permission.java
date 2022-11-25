@@ -35,7 +35,7 @@ public class Permission implements Serializable {
     @ApiModelProperty(value = "权限名称")
     private String name;
 
-    @ApiModelProperty(value = "资源地址")//权限表达式
+    @ApiModelProperty(value = "权限标识")//权限表达式
     private String expression;
 
     @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")

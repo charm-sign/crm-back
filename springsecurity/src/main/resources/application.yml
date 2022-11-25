@@ -1,0 +1,57 @@
+#### application.yml
+spring:
+  application:
+    name: security
+    #spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mycrm?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  #    时区设置（默认会显示时区，设置使其不显示）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+profiles:
+  active: dev
+####  application-dev.yml
+server:
+  port: 8085
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/zf/springsecurity/mapper/xml/*.xml # xml
+
+
+global-config:
+  db-config:
+    logic-delete-value: 1
+logic-not-delete-value: 0
+
+hikari:
+  connection-test-query: SELECT 1
+connection-timeout: 60000
+idle-timeout: 500000
+max-lifetime: 540000
+maximum-pool-size: 12
+minimum-idle: 10
+pool-name: CRMHikariPool
+
+
+# 开启熔断机制
+feign:
+  hystrix:
+    command:
+      execution:
+        timeout:
+          enable: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
